@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enhanced Form Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;         /* slate-900 */
+      --panel: #111827;      /* gray-900 */
+      --muted: #9ca3af;      /* gray-400 */
+      --text: #e5e7eb;       /* gray-200 */
+      --accent: #22d3ee;     /* cyan-400 */
+      --accent-2: #a78bfa;   /* violet-400 */
+      --success: #34d399;    /* emerald-400 */
+      --warning: #fbbf24;    /* amber-400 */
+      --danger: #f87171;     /* red-400 */
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text); background: radial-gradient(1200px 800px at 20% -10%, #1e293b, transparent) no-repeat, var(--bg);
+    }
+
+    header, nav, main, footer { width: 100%; }
+    header {
+      padding: 2rem 1rem; text-align: center; position: sticky; top: 0; backdrop-filter: blur(6px);
+      background: linear-gradient(to right, rgba(17,24,39,0.85), rgba(2,6,23,0.85)); border-bottom: 1px solid #1f2937; z-index: 10;
+    }
+    header h1 { margin: 0 0 .25rem; font-size: clamp(1.5rem, 2vw + 1rem, 2.25rem); letter-spacing: .3px; }
+    header p { margin: 0; color: var(--muted); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
+
+    .grid {
+      display: grid; gap: 1.25rem; align-items: start;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card {
+      grid-column: span 12; background: linear-gradient(180deg, rgba(17,24,39,.8), rgba(3,7,18,.8));
+      border: 1px solid #1f2937; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      overflow: hidden;
+    }
+    .card header { position: static; padding: 1rem 1.25rem; text-align: left; background: transparent; border-bottom: 1px solid #1f2937; }
+    .card header h2 { margin: 0; font-size: 1.25rem; }
+    .card header p { margin-top: .25rem; color: var(--muted); }
+
+    .card .content { padding: 1.25rem; }
+
+    @media (min-width: 900px) {
+      .aside { grid-column: span 4; }
+      .main  { grid-column: span 8; }
+      .full  { grid-column: span 12; }
+    }
+
+    /* Lists & tables */
+    ul, ol { margin: .5rem 0 .5rem 1.25rem; }
+    dl { display: grid; grid-template-columns: 1fr 2fr; gap: .35rem .75rem; }
+    dt { color: var(--muted); }
+    dd { margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin: .5rem 0; }
+    caption { caption-side: top; padding-bottom: .5rem; color: var(--muted); text-align: left; }
+    th, td { padding: .65rem .75rem; border-bottom: 1px solid #1f2937; text-align: left; }
+    th { color: #cbd5e1; font-weight: 600; }
+    tbody tr:hover { background: rgba(148,163,184,.06); }
+
+    /* Form */
+    form { display: grid; gap: 1rem; }
+    fieldset { border: 1px solid #1f2937; border-radius: var(--radius); padding: 1rem; }
+    legend { padding: 0 .5rem; color: #cbd5e1; }
+
+    .row { display: grid; gap: .75rem; grid-template-columns: repeat(12, 1fr); }
+    .col-6 { grid-column: span 12; }
+    .col-4 { grid-column: span 12; }
+    .col-3 { grid-column: span 12; }
+    .col-12 { grid-column: span 12; }
+    @media (min-width: 800px) {
+      .col-6 { grid-column: span 6; }
+      .col-4 { grid-column: span 4; }
+      .col-3 { grid-column: span 3; }
+    }
+
+    label { display: inline-block; margin-bottom: .25rem; }
+    .hint { color: var(--muted); font-size: .9rem; }
+
+    input, select, textarea, button, datalist, output {
+      width: 100%; padding: .7rem .8rem; border-radius: 10px; border: 1px solid #1f2937; background: #0b1220; color: var(--text);
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    .inline { display: flex; align-items: center; gap: .6rem; }
+    .inline input[type="checkbox"], .inline input[type="radio"] { width: 1.1rem; height: 1.1rem; }
+
+    .actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+    .btn { cursor: pointer; border: none; padding: .8rem 1rem; border-radius: 999px; font-weight: 600; }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #06111a; }
+    .btn.secondary { background: #0b1220; border: 1px solid #1f2937; }
+
+    .pill { display: inline-block; padding: .35rem .6rem; border-radius: 999px; background: rgba(34,211,238,.12); color: var(--accent); font-size: .8rem; }
+
+    figure { margin: 0; }
+    .media { display: grid; gap: .75rem; grid-template-columns: 1fr; }
+    @media (min-width: 800px) { .media { grid-template-columns: 1fr 1fr; } }
+
+    footer { color: var(--muted); padding: 2rem 1rem; text-align: center; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <div class="container">
+      <h1>Accessible Enhanced Form <span class="pill">HTML5</span></h1>
+      <p>Well-structured content with lists, tables, media, and a fully validated form.</p>
+    </div>
+  </header>
+
+  <nav aria-label="Breadcrumb" class="container" style="padding-top: .75rem;">
+    <ol class="inline" style="list-style: none; padding: 0; margin: 0; gap: .5rem; flex-wrap: wrap;">
+      <li><a href="#overview">Overview</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="#media">Media</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="#form">Registration Form</a></li>
+    </ol>
+  </nav>
+
+  <main id="content" class="container">
+    <section id="overview" class="grid">
+      <article class="card main">
+        <header>
+          <h2>Overview</h2>
+          <p>Semantic layout using <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>article</code>, <code>aside</code>, and <code>footer</code>.</p>
+        </header>
+        <div class="content">
+          <h3>Features</h3>
+          <ul>
+            <li>Responsive, accessible layout</li>
+            <li>Lists, tables, and embedded media</li>
+            <li>HTML5 form with rich validation</li>
+          </ul>
+
+          <h3>Steps</h3>
+          <ol>
+            <li>Review pricing tiers</li>
+            <li>Preview the media</li>
+            <li>Complete the registration form</li>
+          </ol>
+
+          <h3>Glossary</h3>
+          <dl>
+            <dt>Required</dt><dd>Fields that must be completed to submit.</dd>
+            <dt>Readonly</dt><dd>Information you cannot change.</dd>
+          </dl>
+        </div>
+      </article>
+
+      <aside class="card aside" aria-labelledby="quick-facts">
+        <header>
+          <h2 id="quick-facts">Quick Facts</h2>
+          <p>Handy highlights about the event.</p>
+        </header>
+        <div class="content">
+          <ul>
+            <li><strong>Date:</strong> <time datetime="2025-09-15">15 Sep 2025</time></li>
+            <li><strong>Location:</strong> Nairobi</li>
+            <li><strong>Capacity:</strong> 150 people</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section id="pricing" class="grid">
+      <article class="card full">
+        <header>
+          <h2>Pricing Table</h2>
+          <p>Clear, accessible table with caption and scopes.</p>
+        </header>
+        <div class="content">
+          <table aria-describedby="pricing-note">
+            <caption>Registration Packages</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tier</th>
+                <th scope="col">Includes</th>
+                <th scope="col">Price (KES)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Basic</th>
+                <td>Access + Materials</td>
+                <td>2,000</td>
+              </tr>
+              <tr>
+                <th scope="row">Standard</th>
+                <td>Basic + Lunch</td>
+                <td>3,500</td>
+              </tr>
+              <tr>
+                <th scope="row">Premium</th>
+                <td>Standard + Workshop</td>
+                <td>5,000</td>
+              </tr>
+            </tbody>
+          </table>
+          <p id="pricing-note" class="hint">Students receive a 10% discount with a valid ID.</p>
+        </div>
+      </article>
+    </section>
+
+    <section id="media" class="grid">
+      <article class="card full">
+        <header>
+          <h2>Media Preview</h2>
+          <p>Image and video with accessible captions.</p>
+        </header>
+        <div class="content media">
+          <figure>
+            <picture>
+              <source srcset="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&auto=format&fit=crop&q=60" media="(min-width: 800px)">
+              <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&auto=format&fit=crop&q=60" alt="Attendees networking at a modern event space" width="100%" />
+            </picture>
+            <figcaption class="hint">Fig. 1 — Community networking session.</figcaption>
+          </figure>
+
+          <figure>
+            <video controls width="100%" preload="metadata" aria-describedby="vid-desc">
+              <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <p id="vid-desc" class="hint">Short sample video demonstrating media embedding.</p>
+          </figure>
+        </div>
+      </article>
+    </section>
+
+    <section id="form" class="grid" aria-labelledby="form-title">
+      <article class="card full">
+        <header>
+          <h2 id="form-title">Event Registration Form</h2>
+          <p>Demonstrates placeholders, required fields, autocomplete, readonly, and HTML5 validation.</p>
+        </header>
+        <div class="content">
+          <form action="#" method="post" autocomplete="on" novalidate="false" aria-describedby="form-help">
+            <p id="form-help" class="hint">Fields marked with * are required.</p>
+
+            <fieldset>
+              <legend>Personal Details</legend>
+              <div class="row">
+                <div class="col-6">
+                  <label for="first_name">First Name *</label>
+                  <input id="first_name" name="given-name" type="text" placeholder="e.g., Jane" required minlength="2" autocomplete="given-name" />
+                </div>
+                <div class="col-6">
+                  <label for="last_name">Last Name *</label>
+                  <input id="last_name" name="family-name" type="text" placeholder="e.g., Doe" required minlength="2" autocomplete="family-name" />
+                </div>
+                <div class="col-6">
+                  <label for="email">Email *</label>
+                  <input id="email" name="email" type="email" placeholder="jane@example.com" required autocomplete="email" />
+                </div>
+                <div class="col-6">
+                  <label for="phone">Phone *</label>
+                  <input id="phone" name="tel" type="tel" placeholder="0712 345 678" required pattern="^\+?\d[\d\s-]{7,}$" title="Enter a valid phone number" autocomplete="tel" />
+                </div>
+                <div class="col-6">
+                  <label for="password">Create Password *</label>
+                  <input id="password" name="new-password" type="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password" />
+                </div>
+                <div class="col-6">
+                  <label for="website">Portfolio URL</label>
+                  <input id="website" name="url" type="url" placeholder="https://your-portfolio.com" inputmode="url" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Address</legend>
+              <div class="row">
+                <div class="col-12">
+                  <label for="street">Street Address *</label>
+                  <input id="street" name="street-address" type="text" required placeholder="123 Koinange St" autocomplete="street-address" />
+                </div>
+                <div class="col-6">
+                  <label for="city">City *</label>
+                  <input id="city" name="address-level2" list="city-list" required placeholder="Start typing…" autocomplete="address-level2" />
+                  <datalist id="city-list">
+                    <option value="Nairobi"></option>
+                    <option value="Mombasa"></option>
+                    <option value="Kisumu"></option>
+                    <option value="Nakuru"></option>
+                  </datalist>
+                </div>
+                <div class="col-3">
+                  <label for="country">Country *</label>
+                  <select id="country" name="country" required autocomplete="country-name">
+                    <option value="" disabled selected>Select country</option>
+                    <option>Kenya</option>
+                    <option>Tanzania</option>
+                    <option>Uganda</option>
+                  </select>
+                </div>
+                <div class="col-3">
+                  <label for="zip">Postal Code *</label>
+                  <input id="zip" name="postal-code" type="text" placeholder="00100" required pattern="^[0-9]{4,6}$" title="Use 4–6 digits" autocomplete="postal-code" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Registration Details</legend>
+              <div class="row">
+                <div class="col-4">
+                  <label for="tier">Tier *</label>
+                  <select id="tier" name="tier" required>
+                    <option value="" disabled selected>Select a tier</option>
+                    <optgroup label="General">
+                      <option>Basic</option>
+                      <option>Standard</option>
+                      <option>Premium</option>
+                    </optgroup>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label for="quantity">Tickets *</label>
+                  <input id="quantity" name="quantity" type="number" min="1" max="10" step="1" value="1" required />
+                </div>
+                <div class="col-4">
+                  <label for="date">Event Date *</label>
+                  <input id="date" name="date" type="date" required />
+                </div>
+                <div class="col-6">
+                  <label for="time">Preferred Time</label>
+                  <input id="time" name="time" type="time" />
+                </div>
+                <div class="col-6">
+                  <label for="color">Badge Color</label>
+                  <input id="color" name="color" type="color" value="#22d3ee" />
+                </div>
+                <div class="col-12">
+                  <label for="notes">Notes</label>
+                  <textarea id="notes" name="notes" rows="3" maxlength="300" placeholder="Any accessibility needs, meal preferences, etc."></textarea>
+                  <p class="hint" id="notes-hint">Max 300 characters.</p>
+                </div>
+                <div class="col-12">
+                  <label for="resume">Upload Resume (optional)</label>
+                  <input id="resume" name="resume" type="file" accept=".pdf,.doc,.docx" />
+                </div>
+              </div>
+
+              <div class="row" style="align-items: center;">
+                <div class="col-6">
+                  <label for="donation">Optional Donation (KES)</label>
+                  <input id="donation" name="donation" type="range" min="0" max="5000" step="100" value="0" oninput="donation_output.value = donation.value" aria-describedby="donation-hint" />
+                  <p id="donation-hint" class="hint">Use the slider to set an amount.</p>
+                </div>
+                <div class="col-6">
+                  <label for="donation_output">Selected Amount</label>
+                  <output id="donation_output" name="donation_output">0</output>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Preferences</legend>
+              <div class="row">
+                <div class="col-6">
+                  <span class="hint">Meal Preference *</span>
+                  <div class="inline" role="group" aria-labelledby="meal-group">
+                    <input type="radio" id="meal-veg" name="meal" value="veg" required />
+                    <label for="meal-veg">Vegetarian</label>
+                    <input type="radio" id="meal-nonveg" name="meal" value="nonveg" />
+                    <label for="meal-nonveg">Non‑Vegetarian</label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="inline">
+                    <input type="checkbox" id="agree" name="agree" required />
+                    <label for="agree">I agree to the <a href="#">terms and conditions</a> *</label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>System Info</legend>
+              <div class="row">
+                <div class="col-6">
+                  <label for="order_id">Order ID (readonly)</label>
+                  <input id="order_id" name="order_id" type="text" value="REG-2025-001" readonly />
+                </div>
+                <div class="col-6">
+                  <label for="progress">Registration Progress</label>
+                  <progress id="progress" value="70" max="100">70%</progress>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label for="satisfaction">Satisfaction Meter</label>
+                  <meter id="satisfaction" min="0" max="100" low="30" high="70" optimum="85" value="65">65</meter>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="actions">
+              <button type="submit" class="btn primary">Submit Registration</button>
+              <button type="reset" class="btn secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <p>&copy; <span id="year"></span> Enhanced Form Demo. Built with semantic HTML and accessible components.</p>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+</body>
+</html>
